@@ -171,12 +171,12 @@ For one data $x$, parameter $\theta$:
 - $v^{(1)} \sim p_\theta(v|h)$
 > Parameters: One matrix of weights and two vectors of biases
 - $\forall i,j$:
-  - $\text{grad\_}w_{ij} = v^{(0)}_i p_\theta(h_{j=1}|v^{(0)}_i) - v^{(1)}_i p_\theta(h_{j=1}|v^{(1)})$
-  - $\text{grad\_}a_{i} = v^{(0)}_i - v^{(1)}_i$
-  - $\text{grad\_}b_{j} = p_\theta(h_{j=1}|v^{(0)}_i) - p_\theta(h_{j=1}|v^{(1)})$
-  - $w_{ij} \leftarrow w_{ij} + \epsilon.\text{grad\_}w_{ij}$
-  - $a_{i} \leftarrow a_{i} + \epsilon.\text{grad\_}a_{i}$
-  - $b_{j} \leftarrow b_{j} + \epsilon.\text{grad\_}b_{j}$
+  - $\text{grad}\_w_{ij} = v^{(0)}_i p_\theta(h_{j=1}|v^{(0)}_i) - v^{(1)}_i p_\theta(h_{j=1}|v^{(1)})$
+  - $\text{grad}\_a_{i} = v^{(0)}_i - v^{(1)}_i$
+  - $\text{grad}\_b_{j} = p_\theta(h_{j=1}|v^{(0)}_i) - p_\theta(h_{j=1}|v^{(1)})$
+  - $w_{ij} \leftarrow w_{ij} + \epsilon.\text{grad}\_w_{ij}$
+  - $a_{i} \leftarrow a_{i} + \epsilon.\text{grad}\_a_{i}$
+  - $b_{j} \leftarrow b_{j} + \epsilon.\text{grad}\_b_{j}$
 
 
 ```python

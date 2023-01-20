@@ -75,7 +75,7 @@ $$ p_{\theta}(v,h) = \frac{\exp(-\mathbf{E}(v,h))}{Z} $$
 
 with
 
-$$ \mathbf{E}(v,h) = -\sum_{i=1}^p a_i v_i - \sum_{j=1}^q b_j, h_j - \sum_{i,j} w_{ij}, v_i, h_j  $$
+$$ \mathbf{E}(v,h) = -\sum_{i=1}^p a_i . v_i - \sum_{j=1}^q b_j . h_j - \sum_{i,j} w_{ij} . v_i . h_j  $$
 
 and
 
@@ -86,9 +86,11 @@ $$ Z = \sum_{v_i, h_j} \exp(-\mathbf{E}(v,h)) $$
 
 -----
 > It can be shown that:
-> $$   p(j|x)  \text{and} p(x|j) \iff p(x,j) $$
+> $$   p(j|x)  \text{ and } p(x|j) \iff p(x,j) $$
 > - If we have both conditional laws on a pair of variables, we have the joint law
 -----
+
+Latent, given the observation
 
 $$ p(h|v) = \frac{p(h,v)}{p(v)} $$
 
@@ -101,27 +103,34 @@ $$ = \frac{ \exp(-\mathbf{E}(v,h)) }{\sum^{h} \exp(-\mathbf{E}(v,h)) } $$
 > Sum of products is the product of sums
 > $$ \sum_{h_1,...,h_q} g(h_1)...g(h_q) = \sum_{h_1} g(h_1)...\sum_{h_q} g(h_q)$$
  
-$$
+
+> ⚠️ **The derivation is not complete**
+
+<!-- $$
 = \frac{
   ( \prod_{i} \exp(a_i v_i) ) \; (\prod_{j} \exp(b_j k_j) + \sum_{i} w_{ij} v_i h_j)   
 }{
   ( \prod_{i} \exp(a_i v_i) ) \; (\prod_{j} \exp(b_j k_j) + \sum_{i} w_{ij} v_i h_j)   
 }
-$$
+$$ -->
 
 $$ ... $$
 
-$$ = \prod_{j=1}^{q} g(h_j)$$
+$$ \therefore \; p(h|v) = \prod_{j=1}^{q} g(h_j)$$
 As seen above, the law $p(v,h)$ can be written as a product: conditionally to $v, w$ and $h$ are independent 
 
 With
 
 $$ g(h_j = 1) = \frac{1}{1 + \exp(- (b_j + \sum^{p}_{i=1} w_{ij} v_{i}))} = \text{sigm}(b_j + \sum^{p}_{i=1} w_{ij} v_{i}) $$
+
+> **Perceptron !!!**
+ 
 $$ g(h_j = 0) = 1 - g(h_j = 1) $$
+
 
 ### Conclusion
 
-$$ p(h|v) = \prod^{q}_{j=1} p(h_j | v) $$
+$$ \therefore \; p(h|v) = \prod^{q}_{j=1} p_\theta(h_j | v) $$
 with
 $$ p(h_j = 1 | v) = \text{sigm}(b_j + \sum^{p}_{i=1} w_{ij} v_{i}) $$
 
@@ -144,7 +153,7 @@ $$ p_\theta(v_i = 1 | h) = \text{sigm}(b_j + \sum^{p}_{i=1} w_{ij} v_{i}) $$
 
 - The films aren't independent among them - if they were, there would be no point in what we are doing.
 
-- However, when I know $h$, the $v$ are independent
+- However, when I know $h$, the $v$ are independent (when we eliminate all $h$ nodes, the $v$ nodes aren't connected)
 
 - Stochastic NN with only one layer
   - Neurons are actually variables
@@ -152,8 +161,8 @@ $$ p_\theta(v_i = 1 | h) = \text{sigm}(b_j + \sum^{p}_{i=1} w_{ij} v_{i}) $$
 - From the NN generality theorem:
   - In theory, we can estimate whichever probability distribution law
 
-
-$$ KLD (???) $$
+> ⚠️: <br>
+> $$ \text{Missing derivarion using the Kullback–Leibler divergence (KLD)} $$
 
 > **When using Generative models**
 > - Generative power of the model
@@ -183,25 +192,27 @@ $$   p(v|h)  \; \text{and} \; p(h|v) \rArr \text{Gibbs} $$
 
 $$ q << p $$
 
-Use $h$ associated to $v$ for a supervised estimation algorithm
-------
+## 3. Use $h$ associated to $v$ for a supervised estimation algorithm
+
 
 ------
+
 # Training the model (estimate $\theta$)
 
 
-- $x$ is now the user
+- $x$ is now the user's taste
   - Each user's taste is assumed to be independent $x^{(k)} \; \text{i.i.d.}$
   - $x$ is the realization of $v$
 
 $$ x^{(1)}, ..., x^{(n)}, \text{with} \; x^{(k)} \in \{0,1\}^{p} $$
 
-The log-likelihood will be the sum of the likelihoods on each of the $x$
+The log-likelihood will be the sum of the log of the likelihoods on each of the $x$
+
 > Likelihood is the law of what we observe
 
 
-> We want to find theta as the argmax of the (log-)likelihood
-> If on VAE, the marginal of the joint law - but we can't integrate it.
+> We want to find $\theta$ as the argmax of the (log-)likelihood <br>
+> If on VAE, it's the marginal of the joint law - but we can't integrate it to marginalize. <br>
 > We then use the ELBO, a lower bound on the likelihood.
 
 For one $x$, we maximize w.r.t. $\theta$:
@@ -209,18 +220,23 @@ For one $x$, we maximize w.r.t. $\theta$:
 $$ \log p_\theta(x) = \log \sum_{h} p_\theta(x,h) $$
 $$ = \log \sum_{h} p_\theta(x,h) $$
 
+> ---
 > From Energy model:
 > $$ p_{\theta}(v,h) = \frac{\exp(-\mathbf{E}(v,h))}{Z} $$
+>
+> So continuing the derivation:
+> 
+> ---
 
 $$ = \log \sum_{h} \frac{\exp(-\mathbf{E}_{\theta}(x,h))}{Z} $$
 
-> Z depends on $\theta$, so we'll keep it
+Z depends on $\theta$, so we'll keep it
  
 $$ = \log \sum_{h} \exp(-\mathbf{E}_{\theta}(x,h)) - \log (Z) $$
 
 $$ = \log \sum_{h} \exp(-\mathbf{E}_{\theta}(x,h)) - \log \left(\sum_{v,h} \exp(-\mathbf{E}_{\theta}(x,h))\right) $$
 
-> Here we use $v$ as notation for the sum, we can do it since is a mute variable. We cannot use $x$ to sum, because $x$ is the data "qui tombe du ciel". $x$ is a "réalisation" of $v$
+Here we use $v$ as notation for the sum, we can do it since it's a mute variable. We cannot use $x$ to sum, because $x$ is the data "qui tombe du ciel". $x$ is a "réalisation" of $v$.
 
 In order to make a **gradient ascent**:
 
@@ -230,11 +246,13 @@ $$
   \frac{\sum_{v,h} v_i \; h_j \; \exp(-\mathbf{E}_{\theta}(v,h))} {\sum_{v,h} \exp(-\mathbf{E}_{\theta}(v,h))}
 $$
 
+
 $$
 = 
   \sum_{h} x_i \; h_j \; p_\theta(h\;|\;v = x)  -
   \sum_{v,h} v_i \; h_j \; p_\theta(v, h)
 $$
+
 
 > **Marginalization** <br>
 > $$ \sum_{x,z} p(x,y,z) = p(y) $$
@@ -263,7 +281,7 @@ $$ = x_i \; p_\theta(h_j=1 | x) - \mathbb{E} \left(f_{i,j}(v) \; p(v) \right)$$
 $p(h=1 | x)$ is what we know how to obtain
 
 
-> To obtain the subtracting term, Gibbs will work. However, doing a Gibbs sampling for wach data point (our batch) will take too long - we want to initialize Gibbs in order to do only one iteration.
+> To obtain the subtracting term, Gibbs will work. However, doing a Gibbs sampling for each data point (our batch) will take too long - we want to initialize Gibbs in order to do only one iteration.
 
 ### Gibbs
 
@@ -294,7 +312,7 @@ $$ =  $$
 - How to know if the model has learned?
   - Gradient is small, and the reconstruction is close to the initial data
 
-## Algorithm
+## CD-1 Algorithm
 
 For one data $x$
 
